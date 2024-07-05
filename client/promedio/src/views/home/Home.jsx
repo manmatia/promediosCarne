@@ -1,10 +1,32 @@
-import React from 'react'
-import "./Home.css"
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import './Home.css';
 
-function Home() {
+const Home = () => {
+  const navigate = useNavigate();
+
+  const navigateTo = (path) => {
+    navigate(path);
+  };
+
   return (
-    <div>home</div>
-  )
-}
+    <div className="home-container">
+      <button className="home-button" onClick={() => navigateTo('/promedio')}>
+        Promedio
+      </button>
+      <button className="home-button" onClick={() => navigateTo('/edicion')}>
+        Edición
+      </button>
+      <button className="home-button" onClick={() => navigateTo('/carga')}>
+        Carga de Datos
+      </button>
+      <button className="home-button" onClick={() => navigateTo('/categoria')}>
+        Categorías
+      </button>
+    </div>
+  );
+};
 
-export default Home
+export default Home;
+
+

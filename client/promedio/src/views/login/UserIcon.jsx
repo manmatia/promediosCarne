@@ -9,7 +9,12 @@ const clerkPubKey = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 
 const UserIcon = () => {
   return (
-    <ClerkProvider publishableKey={clerkPubKey} localization={esES}>
+    <ClerkProvider 
+      publishableKey={clerkPubKey} 
+      localization={esES}
+      afterSignInUrl="/home"  // URL a la que redirigir después de iniciar sesión
+      afterSignOutUrl="/landing"  // URL a la que redirigir después de cerrar sesión
+    >
       <User />
     </ClerkProvider>
   );

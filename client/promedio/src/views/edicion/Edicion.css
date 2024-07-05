@@ -1,0 +1,21 @@
+/* Edicion.css */
+.nuevo-precio-input {
+    max-width: 100px;
+  }
+  
+  .table-responsive {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  .table thead tr:nth-child(2) {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa;
+    z-index: 1;
+  }
+  
+  .thead-light {
+    background-color: #e9ecef;
+  }
+  

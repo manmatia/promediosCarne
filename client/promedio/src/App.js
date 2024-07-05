@@ -1,8 +1,12 @@
 import React from 'react';
+import { useDispatch, useSelector } from "react-redux";
 import { Routes, Route } from 'react-router-dom';
 import Home from './views/home/Home';
 import Landing from './views/landing/Landing';
 import NavBar from './componentes/navBar/NavBar';
+import Category from './views/categoria/Category'; 
+import Edicion from './views/edicion/Edicion.jsx';
+import Carga from './views/carga/Carga.jsx';
 import Promedio from "./views/promedio/Promedio"
 import Footer from "./componentes/footer/Footer"
 import axios from 'axios';
@@ -12,23 +16,28 @@ import './App.css';
 axios.defaults.baseURL = 'http://localhost:3001/';
 
 function App() {
+  const user = useSelector((state) => state.userById);
+  const userId = useSelector((state) => state.userId);
+
   return (
     <div>
-      <NavBar />
-
+       <NavBar />
+      {user?.user?.userRole === 'administrator' ||
+        user?.user?.userRole === 'superadministrator' ||
+        user?.user?.userRole === "user" ? (
+       
       <Routes>
+        
         <Route path="/home" element={<Home/>} />
-        <Route path="*" element={<Landing/>} />
         <Route path="/promedio" element={<Promedio/>} />
-        {/* <Route path='/' element={<Landing />} />
-        <Route path='/home' element={<Home />} /> */}
-        {/* <Route path='/products' element={<Products />} />
-        <Route path='/create' element={<Create />} /> */}
-        {/* Uncomment and add missing routes as needed */}
-        {/* <Route path='/products/:id' element={<Detail />} /> */}
-        {/* <Route path='/procesando' element={isUserBanned ? <BannedUserPage /> : <EnProceso />} /> */}
-        {/* <Route path='*' element={<Landing />} /> */}
-      </Routes>
+        <Route path="/categoria" element={<Category/>} />
+        <Route path="/edicion" element={<Edicion/>} />
+        <Route path="/carga" element={<Carga/>} />
+        <Route path="*" element={<Home/>} />
+      </Routes>) :
+       <Routes>
+         <Route path="*" element={<Landing/>} />
+       </Routes>}
       <Footer />
     </div>
   );

@@ -122,12 +122,13 @@ export function postProducts(createProduct) {
 
 
 
-export function putCategories(id, name) {
+export function putCategories(id, nombre, kgMedia, precio) {
   return async function (dispatch) {
     try {
-      const response = await axios.put(`/category`, {
-        name,
-        id,
+      const response = await axios.put(`/category/${id}`, {
+        nombre,
+        kgMedia,
+        precio
       });
       dispatch({
         type: PUT_CATEGORIES,
