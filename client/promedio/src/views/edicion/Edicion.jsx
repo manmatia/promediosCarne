@@ -118,10 +118,10 @@ function Edicion() {
     }));
   
     // Agregar los encabezados de las columnas
-    worksheetData.push(
-      { 'Corte': 'Corte', 'Precio Anterior': 'Precio Anterior', 'Precio Nuevo': 'Precio Nuevo' },
-      ...dataCortes
-    );
+    // worksheetData.push(
+    //   { 'Corte': 'Corte', 'Precio Anterior': 'Precio Anterior', 'Precio Nuevo': 'Precio Nuevo' },
+    //   ...dataCortes
+    // );
   
     // Datos adicionales para resultados anteriores y nuevos
     const resultadosOriginales = {
