@@ -21,7 +21,7 @@ export const putPromedio = (categoriaId, data) => {
     try {
       console.log('Datos recibidos:', data); // Verifica qué datos estás recibiendo aquí
 
-      const response = await axios.put(`http://localhost:3001/${categoriaId}`, data, {
+      const response = await axios.put(`/${categoriaId}`, data, {
         headers: {
           'Content-Type': 'application/json'
         }
