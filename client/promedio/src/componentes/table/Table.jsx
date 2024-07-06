@@ -16,7 +16,7 @@ function Table() {
   const categoriaSeleccionada = useSelector((state) => state.allProducts) || {};
   const cortes = categoriaSeleccionada.cortes || [];
   const dispatch = useDispatch();
-
+console.log(totalKilos, totalPorcentaje)
   useEffect(() => {
     const fetchCategorias = async () => {
       dispatch(getCategories());

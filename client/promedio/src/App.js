@@ -13,12 +13,12 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
-axios.defaults.baseURL = "postgresql://postgres:dmyaGcfmIPpAfWOhFgyzzfWdMghwZTCM@viaduct.proxy.rlwy.net:14911/railway";
-// axios.defaults.baseURL = "http://localhost:14911";
+// axios.defaults.baseURL = "postgresql://postgres:dmyaGcfmIPpAfWOhFgyzzfWdMghwZTCM@viaduct.proxy.rlwy.net:14911/railway";
+axios.defaults.baseURL = "https://promedioscarne-production.up.railway.app/";
 
 function App() {
   const user = useSelector((state) => state.userById);
-  const userId = useSelector((state) => state.userId);
+  // const userId = useSelector((state) => state.userId);
 
   return (
     <div>
