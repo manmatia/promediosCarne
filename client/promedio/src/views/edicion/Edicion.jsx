@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { getCategories, getCategoriesId } from "../../redux/Actions";
 import { useSelector, useDispatch } from "react-redux";
@@ -111,7 +112,7 @@ function Edicion() {
       'Venta': totalNuevoPrecio.toFixed(2),
       'Utilidad': (totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)).toFixed(2),
       'Porcentaje': ((((totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / (parseFloat(selectedPrecio) * selectedkgMedia)) * 100).toFixed(2)),
-      'Ganancia/KG': (((totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / selectedkgMedia).toFixed(2))
+      'Ganancia/KG': (((totalNuevoPrecio - (parseFloat(selectedkgMedia) * selectedkgMedia)) / selectedkgMedia).toFixed(2))
     };
 
     const dataCortes = cortes.map(corte => ({
@@ -134,6 +135,18 @@ function Edicion() {
   const exportToExcel = () => {
     const worksheetData = generateWorksheetData();
     const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+
+    // Ajuste de ancho de columna
+    const wscols = [
+      { wch: 20 }, // ancho de la primera columna
+      { wch: 15 }, // ancho de la segunda columna
+      { wch: 15 },
+      { wch: 15 },
+      { wch: 15 },
+      { wch: 15 }
+    ];
+    worksheet['!cols'] = wscols;
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Resultados');
 
@@ -143,6 +156,18 @@ function Edicion() {
   const shareExcel = async () => {
     const worksheetData = generateWorksheetData();
     const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+
+    // Ajuste de ancho de columna
+    const wscols = [
+      { wch: 20 }, // ancho de la primera columna
+      { wch: 15 }, // ancho de la segunda columna
+      { wch: 15 },
+      { wch: 15 },
+      { wch: 15 },
+      { wch: 15 }
+    ];
+    worksheet['!cols'] = wscols;
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Resultados');
 
@@ -167,7 +192,6 @@ function Edicion() {
       console.warn('La API de compartir archivos no es compatible con este navegador');
     }
   };
-
 
   return (
     <>
