@@ -142,11 +142,11 @@ function Edicion() {
       'Ganancia/KG': (((totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / selectedkgMedia).toFixed(2))
     };
   
-    worksheetData.push(
-      {},
-      { '': 'Anterior', ...resultadosOriginales },
-      { '': 'Nuevo', ...resultadosNuevos }
-    );
+    // worksheetData.push(
+    //   {},
+    //   { '': 'Anterior', ...resultadosOriginales },
+    //   { '': 'Nuevo', ...resultadosNuevos }
+    // );
   
     const worksheet = XLSX.utils.json_to_sheet(worksheetData);
   
