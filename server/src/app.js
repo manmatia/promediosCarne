@@ -41,7 +41,7 @@ server.use(cors({
   credentials: true,
 }));
 server.use(cors({
-  origin: 'https://promedios-carne.vercel.app/', // Reemplaza con la URL real de tu frontend en Vercel
+  origin: 'https://promedios-carne.vercel.app', // Reemplaza con la URL real de tu frontend en Vercel
   credentials: true,
 }));
 
