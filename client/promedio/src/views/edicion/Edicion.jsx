@@ -123,8 +123,8 @@ function Edicion() {
 
     const worksheetData = [
       { 'Categoria': categoriaNombre, 'Fecha': fecha },
-      // {},
-      // { '': 'Corte', 'Precio Anterior': 'Precio Anterior', 'Nuevo Total': 'Nuevo Total' },
+      {},
+      { '': 'Corte', 'Precio Anterior': 'Precio Anterior', 'Nuevo Total': 'Nuevo Total' },
       ...dataCortes,
       {},
       { '': 'Anterior', ...resultadosOriginales },
