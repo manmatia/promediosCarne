@@ -13,7 +13,8 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
-axios.defaults.baseURL = "postgresql://postgres:mwAJVgvREDwEFTpbMOuUqYucAQTFzlqJ@viaduct.proxy.rlwy.net:28334/railway";
+// axios.defaults.baseURL = "postgresql://postgres:mwAJVgvREDwEFTpbMOuUqYucAQTFzlqJ@viaduct.proxy.rlwy.net:28334/railway";
+axios.defaults.baseURL = "http://localhost:28334";
 
 function App() {
   const user = useSelector((state) => state.userById);
