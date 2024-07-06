@@ -114,12 +114,12 @@ function Edicion() {
     const dataCortes = cortes.map(corte => ({
       'Corte': corte.corte,
       'Precio Anterior': parseFloat(corte.precio_venta).toFixed(2),
-      'Nuevo Total': ((nuevoPrecio[corte.id] || 0) * corte.kilos).toFixed(2)
+      'Precio Nuevo': (nuevoPrecio[corte.id] || 0).toFixed(2)
     }));
   
     // Agregar los encabezados de las columnas
     worksheetData.push(
-      { 'Corte': 'Corte', 'Precio Anterior': 'Precio Anterior', 'Nuevo Total': 'Nuevo Total' },
+      { 'Corte': 'Corte', 'Precio Anterior': 'Precio Anterior', 'Precio Nuevo': 'Precio Nuevo' },
       ...dataCortes
     );
   
@@ -156,6 +156,7 @@ function Edicion() {
   
     return worksheet;
   };
+  
   
   const shareExcel = async () => {
     const worksheet = generateWorksheetData();
