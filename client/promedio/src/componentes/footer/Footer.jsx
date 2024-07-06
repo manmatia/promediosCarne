@@ -5,7 +5,7 @@ function Footer() {
   return (
     <footer className="footer">
     <div className="container text-center">
-      <span className="text-muted">© 2024 Mi Empresa. Todos los derechos reservados.</span>
+      <span className="text-muted">© 2024 G&M solutions. Todos los derechos reservados.</span>
     </div>
   </footer>
   )

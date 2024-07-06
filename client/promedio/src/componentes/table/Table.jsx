@@ -103,8 +103,8 @@ console.log(totalKilos, totalPorcentaje)
           <thead>
             <tr>
               <th scope="col">CORTE</th>
-              <th scope="col">PORCENTAJE</th>
-              <th scope="col">KILOS</th>
+              <th scope="col">%</th>
+              <th scope="col">KG</th>
               <th scope="col">PRECIO</th>
               <th scope="col">TOTAL</th>
             </tr>

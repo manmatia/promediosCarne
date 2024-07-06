@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getCategories, getCategoriesId } from "../../redux/Actions";
 import { useSelector, useDispatch } from "react-redux";
 import * as XLSX from 'xlsx';
-import "./Edicion.css"
+import "./Edicion.css";
 
 function Edicion() {
   const [selectedId, setSelectedId] = useState(null);
@@ -88,12 +88,16 @@ function Edicion() {
     }
   }, [cortes, selectedkgMedia, nuevoPrecio]);
 
-  const exportToExcel = () => {
+  const generateWorksheetData = () => {
     const categoriaNombre = categorias.find(cat => cat.id === selectedId)?.nombre || '';
+    const fecha = new Date().toLocaleDateString('es-AR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: '2-digit'
+    });
 
     const resultadosOriginales = {
       'Tipo': 'Original',
-      // 'Precio': parseFloat(selectedPrecio).toFixed(2),
       'Costo': (parseFloat(selectedPrecio) * selectedkgMedia).toFixed(2),
       'Venta': totalPrecio.toFixed(2),
       'Utilidad': (totalPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)).toFixed(2),
@@ -103,7 +107,6 @@ function Edicion() {
 
     const resultadosNuevos = {
       'Tipo': 'Nuevo',
-      'Precio': parseFloat(selectedPrecio).toFixed(2),
       'Costo': (parseFloat(selectedPrecio) * selectedkgMedia).toFixed(2),
       'Venta': totalNuevoPrecio.toFixed(2),
       'Utilidad': (totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)).toFixed(2),
@@ -113,21 +116,23 @@ function Edicion() {
 
     const dataCortes = cortes.map(corte => ({
       'Corte': corte.corte,
-      'Precio': parseFloat(corte.precio_venta).toFixed(2),
-      'Total': (corte.kilos * corte.precio_venta).toFixed(2),
-      'Nuevo Precio': nuevoPrecio[corte.id] || 0,
-      'Nuevo Total': (nuevoPrecio[corte.id] || 0) * corte.kilos,
-      // 'Precio Anterior': parseFloat(corte.precio_venta).toFixed(2),
+      'Precio Anterior': parseFloat(corte.precio_venta).toFixed(2),
+      'Nuevo Total': ((nuevoPrecio[corte.id] || 0) * corte.kilos).toFixed(2)
     }));
 
-    const worksheetData = [
-      { 'Categoria': categoriaNombre },
-      { ...resultadosOriginales },
-      { ...resultadosNuevos },
+    return [
+      { 'Categoria': categoriaNombre, 'Fecha': fecha },
       {},
-      ...dataCortes
+      { '': 'Corte', 'Precio Anterior': 'Precio Anterior', 'Nuevo Total': 'Nuevo Total' },
+      ...dataCortes,
+      {},
+      { '': 'Anterior', ...resultadosOriginales },
+      { '': 'Nuevo', ...resultadosNuevos }
     ];
+  };
 
+  const exportToExcel = () => {
+    const worksheetData = generateWorksheetData();
     const worksheet = XLSX.utils.json_to_sheet(worksheetData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Resultados');
@@ -136,45 +141,7 @@ function Edicion() {
   };
 
   const shareExcel = async () => {
-    const categoriaNombre = categorias.find(cat => cat.id === selectedId)?.nombre || '';
-
-    const resultadosOriginales = {
-      'Tipo': 'Original',
-      'Precio': parseFloat(selectedPrecio).toFixed(2),
-      'Costo': (parseFloat(selectedPrecio) * selectedkgMedia).toFixed(2),
-      'Venta': totalPrecio.toFixed(2),
-      'Utilidad': (totalPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)).toFixed(2),
-      'Porcentaje': ((((totalPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / (parseFloat(selectedkgMedia) * selectedkgMedia)) * 100).toFixed(2)),
-      'Ganancia/KG': (((totalPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / selectedkgMedia).toFixed(2))
-    };
-
-    const resultadosNuevos = {
-      'Tipo': 'Nuevo',
-      'Precio': parseFloat(selectedPrecio).toFixed(2),
-      'Costo': (parseFloat(selectedPrecio) * selectedkgMedia).toFixed(2),
-      'Venta': totalNuevoPrecio.toFixed(2),
-      'Utilidad': (totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)).toFixed(2),
-      'Porcentaje': ((((totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / (parseFloat(selectedPrecio) * selectedkgMedia)) * 100).toFixed(2)),
-      'Ganancia/KG': (((totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / selectedkgMedia).toFixed(2))
-    };
-
-    const dataCortes = cortes.map(corte => ({
-      'Corte': corte.corte,
-      'Precio': parseFloat(corte.precio_venta).toFixed(2),
-      'Total': (corte.kilos * corte.precio_venta).toFixed(2),
-      'Nuevo Precio': nuevoPrecio[corte.id] || 0,
-      'Nuevo Total': (nuevoPrecio[corte.id] || 0) * corte.kilos,
-      'Precio Anterior': parseFloat(corte.precio_venta).toFixed(2),
-    }));
-
-    const worksheetData = [
-      { 'Categoria': categoriaNombre },
-      { ...resultadosOriginales },
-      { ...resultadosNuevos },
-      {},
-      ...dataCortes
-    ];
-
+    const worksheetData = generateWorksheetData();
     const worksheet = XLSX.utils.json_to_sheet(worksheetData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Resultados');
@@ -200,6 +167,7 @@ function Edicion() {
       console.warn('La API de compartir archivos no es compatible con este navegador');
     }
   };
+
 
   return (
     <>
@@ -228,21 +196,22 @@ function Edicion() {
         <tr>
               <th scope="col"></th>
               {/* <th scope="col">Precio</th> */}
-              <th scope="col">Costo</th>
-              <th scope="col">Venta</th>
+
               <th scope="col">Utilidad</th>
               <th scope="col">Porcentaje</th>
               <th scope="col">Ganancia/KG</th>
+              <th scope="col">Costo</th>
+              <th scope="col">Venta</th>
             </tr>
           <tr>
             <td>Anterior</td>
             {/* <td>${parseFloat(selectedPrecio).toFixed(2)}</td> */}
-            <td>${(parseFloat(selectedPrecio) * selectedkgMedia).toFixed(2)}</td>
-            <td>${totalPrecio.toFixed(2)}</td>
+         
             <td>${(totalPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)).toFixed(2)}</td>
             <td>{((((totalPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / (parseFloat(selectedPrecio) * selectedkgMedia)) * 100).toFixed(2))}%</td>
             <td>${(((totalPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / selectedkgMedia).toFixed(2))}</td>
-        
+            <td>${(parseFloat(selectedPrecio) * selectedkgMedia).toFixed(2)}</td>
+            <td>${totalPrecio.toFixed(2)}</td>
 
           </tr>
         
