@@ -1,6 +1,8 @@
 import React from 'react';
 import UserIcon from '../../views/login/UserIcon';
 import { useSelector } from "react-redux";
+import { NavLink } from 'react-router-dom';
+import "./NavBar.css"
 
 function Navbar() {
   const user = useSelector((state) => state.userById);
@@ -15,19 +17,19 @@ function Navbar() {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <a className="nav-link active" aria-current="page" href="/home">INICIO</a>
+              <NavLink exact to="/home" className="nav-link" activeClassName="active" aria-current="page">INICIO</NavLink>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/promedio">PROMEDIO</a>
+              <NavLink to="/promedio" className="nav-link" activeClassName="active">PROMEDIO</NavLink>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/edicion">EDICIÓN</a>
+              <NavLink to="/edicion" className="nav-link" activeClassName="active">EDICIÓN</NavLink>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/carga">CARGA</a>
+              <NavLink to="/carga" className="nav-link" activeClassName="active">CARGA</NavLink>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/categoria">CATEGORÍA</a>
+              <NavLink to="/categoria" className="nav-link" activeClassName="active">CATEGORÍA</NavLink>
             </li>
           </ul>
           <UserIcon />
