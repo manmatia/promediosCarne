@@ -89,6 +89,13 @@ function Edicion() {
     }
   }, [cortes, selectedkgMedia, nuevoPrecio]);
 
+  const exportToExcel = () => {
+    const worksheet = generateWorksheetData();
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Resultados');
+
+    XLSX.writeFile(workbook, 'resultados.xlsx');
+  };
   const generateWorksheetData = () => {
     const categoriaNombre = categorias.find(cat => cat.id === selectedId)?.nombre || '';
     const fecha = new Date().toLocaleDateString('es-AR', {
@@ -96,7 +103,27 @@ function Edicion() {
       month: '2-digit',
       year: '2-digit'
     });
-
+  
+    // Datos de la categoría y fecha
+    const worksheetData = [
+      { 'Categoria': categoriaNombre, 'Fecha': fecha },
+      {},
+    ];
+  
+    // Datos de los cortes, precios anteriores y nuevos
+    const dataCortes = cortes.map(corte => ({
+      'Corte': corte.corte,
+      'Precio Anterior': parseFloat(corte.precio_venta).toFixed(2),
+      'Nuevo Total': ((nuevoPrecio[corte.id] || 0) * corte.kilos).toFixed(2)
+    }));
+  
+    // Agregar los encabezados de las columnas
+    worksheetData.push(
+      { 'Corte': 'Corte', 'Precio Anterior': 'Precio Anterior', 'Nuevo Total': 'Nuevo Total' },
+      ...dataCortes
+    );
+  
+    // Datos adicionales para resultados anteriores y nuevos
     const resultadosOriginales = {
       'Tipo': 'Original',
       'Costo': (parseFloat(selectedPrecio) * selectedkgMedia).toFixed(2),
@@ -105,7 +132,7 @@ function Edicion() {
       'Porcentaje': ((((totalPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / (parseFloat(selectedPrecio) * selectedkgMedia)) * 100).toFixed(2)),
       'Ganancia/KG': (((totalPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / selectedkgMedia).toFixed(2))
     };
-
+  
     const resultadosNuevos = {
       'Tipo': 'Nuevo',
       'Costo': (parseFloat(selectedPrecio) * selectedkgMedia).toFixed(2),
@@ -114,40 +141,22 @@ function Edicion() {
       'Porcentaje': ((((totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / (parseFloat(selectedPrecio) * selectedkgMedia)) * 100).toFixed(2)),
       'Ganancia/KG': (((totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / selectedkgMedia).toFixed(2))
     };
-
-    const dataCortes = cortes.map(corte => ({
-      'Corte': corte.corte,
-      'Precio Anterior': parseFloat(corte.precio_venta).toFixed(2),
-      'Nuevo Precio': (nuevoPrecio || 0).toFixed(2)
-    }));
-
-    const worksheetData = [
-      { 'Categoria': categoriaNombre, 'Fecha': fecha },
-      {},
-      { '': 'Corte', 'Precio Anterior': 'Precio Anterior', 'Nuevo Total': 'Nuevo Total' },
-      ...dataCortes,
+  
+    worksheetData.push(
       {},
       { '': 'Anterior', ...resultadosOriginales },
       { '': 'Nuevo', ...resultadosNuevos }
-    ];
-
+    );
+  
     const worksheet = XLSX.utils.json_to_sheet(worksheetData);
-
+  
     // Ajustar la altura de las filas
     const rowHeights = new Array(worksheetData.length).fill({ hpx: 20 }); // Altura de 20 píxeles para todas las filas
     worksheet['!rows'] = rowHeights;
-
+  
     return worksheet;
   };
-
-  const exportToExcel = () => {
-    const worksheet = generateWorksheetData();
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Resultados');
-
-    XLSX.writeFile(workbook, 'resultados.xlsx');
-  };
-
+  
   const shareExcel = async () => {
     const worksheet = generateWorksheetData();
     const workbook = XLSX.utils.book_new();
