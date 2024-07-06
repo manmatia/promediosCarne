@@ -118,7 +118,7 @@ function Edicion() {
     const dataCortes = cortes.map(corte => ({
       'Corte': corte.corte,
       'Precio Anterior': parseFloat(corte.precio_venta).toFixed(2),
-      'Nuevo Total': ((nuevoPrecio[corte.id] || 0) * corte.kilos).toFixed(2)
+      'Nuevo Precio': (nuevoPrecio || 0).toFixed(2)
     }));
 
     const worksheetData = [
