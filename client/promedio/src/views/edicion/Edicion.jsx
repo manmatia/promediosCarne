@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { getCategories, getCategoriesId } from "../../redux/Actions";
 import { useSelector, useDispatch } from "react-redux";
@@ -96,6 +95,7 @@ function Edicion() {
 
     XLSX.writeFile(workbook, 'resultados.xlsx');
   };
+
   const generateWorksheetData = () => {
     const categoriaNombre = categorias.find(cat => cat.id === selectedId)?.nombre || '';
     const fecha = new Date().toLocaleDateString('es-AR', {
@@ -103,26 +103,26 @@ function Edicion() {
       month: '2-digit',
       year: '2-digit'
     });
-  
+
     // Datos de la categoría y fecha
     const worksheetData = [
       { 'Categoria': categoriaNombre, 'Fecha': fecha },
       {},
     ];
-  
+
     // Datos de los cortes, precios anteriores y nuevos
     const dataCortes = cortes.map(corte => ({
       'Corte': corte.corte,
       'Precio Anterior': parseFloat(corte.precio_venta).toFixed(2),
       'Precio Nuevo': (nuevoPrecio[corte.id] || 0).toFixed(2)
     }));
-  
+
     // Agregar los encabezados de las columnas
     worksheetData.push(
       { 'Corte': 'Corte', 'Precio Anterior': 'Precio Anterior', 'Precio Nuevo': 'Precio Nuevo' },
       ...dataCortes
     );
-  
+
     // Datos adicionales para resultados anteriores y nuevos
     const resultadosOriginales = {
       'Tipo': 'Original',
@@ -132,7 +132,7 @@ function Edicion() {
       'Porcentaje': ((((totalPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / (parseFloat(selectedPrecio) * selectedkgMedia)) * 100).toFixed(2)),
       'Ganancia/KG': (((totalPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / selectedkgMedia).toFixed(2))
     };
-  
+
     const resultadosNuevos = {
       'Tipo': 'Nuevo',
       'Costo': (parseFloat(selectedPrecio) * selectedkgMedia).toFixed(2),
@@ -141,23 +141,22 @@ function Edicion() {
       'Porcentaje': ((((totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / (parseFloat(selectedPrecio) * selectedkgMedia)) * 100).toFixed(2)),
       'Ganancia/KG': (((totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / selectedkgMedia).toFixed(2))
     };
-  
-    // worksheetData.push(
-    //   {},
-    //   { '': 'Anterior', ...resultadosOriginales },
-    //   { '': 'Nuevo', ...resultadosNuevos }
-    // );
-  
+
+    worksheetData.push(
+      {},
+      { '': 'Anterior', ...resultadosOriginales },
+      { '': 'Nuevo', ...resultadosNuevos }
+    );
+
     const worksheet = XLSX.utils.json_to_sheet(worksheetData);
-  
+
     // Ajustar la altura de las filas
     const rowHeights = new Array(worksheetData.length).fill({ hpx: 20 }); // Altura de 20 píxeles para todas las filas
     worksheet['!rows'] = rowHeights;
-  
+
     return worksheet;
   };
-  
-  
+
   const shareExcel = async () => {
     const worksheet = generateWorksheetData();
     const workbook = XLSX.utils.book_new();
@@ -184,77 +183,66 @@ function Edicion() {
       console.warn('La API de compartir archivos no es compatible con este navegador');
     }
   };
-
-
   return (
     <>
     <br />
-      <div className="btn-group" role="group" aria-label="Basic radio toggle button group">
-        {categorias.map((categoria) => (
-          <React.Fragment key={categoria.id}>
-            <input
-              type="radio"
-              className="btn-check"
-              name="btnradio"
-              id={categoria.id}
-              autoComplete="off"
-              onChange={handleRadioChange}
-              checked={selectedId === categoria.id}
-            />
-            <label className="btn btn-outline-primary" htmlFor={categoria.id}>{categoria.nombre}</label>
-          </React.Fragment>
-        ))}
-      </div>
-      <hr />
-      <div className="col-12 col-md-8">
+    <div className="btn-group" role="group" aria-label="Basic radio toggle button group">
+      {categorias.map((categoria) => (
+        <React.Fragment key={categoria.id}>
+          <input
+            type="radio"
+            className="btn-check"
+            name="btnradio"
+            id={categoria.id}
+            autoComplete="off"
+            onChange={handleRadioChange}
+            checked={selectedId === categoria.id}
+          />
+          <label className="btn btn-outline-primary" htmlFor={categoria.id}>{categoria.nombre}</label>
+        </React.Fragment>
+      ))}
+    </div>
+    <hr />
+    <div className="col-12 col-md-8">
       <div className="table-responsive">
-      <table className="table table-striped table-hover">
-        <tbody>
-        <tr>
+        <table className="table table-striped table-hover">
+          <tbody>
+            <tr>
               <th scope="col"></th>
-              {/* <th scope="col">Precio</th> */}
-
               <th scope="col">Utilidad</th>
               <th scope="col">Porcentaje</th>
               <th scope="col">Ganancia/KG</th>
               <th scope="col">Costo</th>
               <th scope="col">Venta</th>
             </tr>
-          <tr>
-            <td>Anterior</td>
-            {/* <td>${parseFloat(selectedPrecio).toFixed(2)}</td> */}
-         
-            <td>${(totalPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)).toFixed(2)}</td>
-            <td>{((((totalPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / (parseFloat(selectedPrecio) * selectedkgMedia)) * 100).toFixed(2))}%</td>
-            <td>${(((totalPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / selectedkgMedia).toFixed(2))}</td>
-            <td>${(parseFloat(selectedPrecio) * selectedkgMedia).toFixed(2)}</td>
-            <td>${totalPrecio.toFixed(2)}</td>
-
-          </tr>
-        
-          <tr>
-            <td>Nuevo</td>
-            {/* <td>${parseFloat(selectedPrecio).toFixed(2)}</td> */}
-            <td>${(parseFloat(selectedPrecio) * selectedkgMedia).toFixed(2)}</td>
-            <td>${totalNuevoPrecio.toFixed(2)}</td>
-            <td>${(totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)).toFixed(2)}</td>
-            <td>{((((totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / (parseFloat(selectedPrecio) * selectedkgMedia)) * 100).toFixed(2))}%</td>
-            <td>${(((totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / selectedkgMedia).toFixed(2))}</td>
-          </tr>
-        </tbody>
-      </table>
-      <hr />
+            <tr>
+              <td>Anterior</td>
+              <td>${(totalPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)).toFixed(2)}</td>
+              <td>{((((totalPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / (parseFloat(selectedPrecio) * selectedkgMedia)) * 100).toFixed(2))}%</td>
+              <td>${(((totalPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / selectedkgMedia).toFixed(2))}</td>
+              <td>${(parseFloat(selectedPrecio) * selectedkgMedia).toFixed(2)}</td>
+              <td>${totalPrecio.toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td>Nuevo</td>
+              <td>${(totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)).toFixed(2)}</td>
+              <td>{((((totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / (parseFloat(selectedPrecio) * selectedkgMedia)) * 100).toFixed(2))}%</td>
+              <td>${(((totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / selectedkgMedia).toFixed(2))}</td>
+              <td>${(parseFloat(selectedPrecio) * selectedkgMedia).toFixed(2)}</td>
+              <td>${totalNuevoPrecio.toFixed(2)}</td>
+            </tr>
+          </tbody>
+        </table>
+        <hr />
       </div>
-      </div>
-      <div className="col-12 col-md-8">
+    </div>
+    <div className="col-12 col-md-8">
       <div className="table-responsive">
         <br />
-    
         <table className="table table-striped table-hover">
           <thead>
             <tr>
               <th scope="col">CORTE</th>
-              {/* <th scope="col">PRECIO</th> */}
               <th scope="col">NUEVO TOTAL</th>
               <th scope="col">NUEVO PRECIO</th>
               <th scope="col">PRECIO ANTERIOR</th>
@@ -266,43 +254,40 @@ function Edicion() {
               cortes.map((corte) => (
                 <tr key={corte.id}>
                   <td>{corte.corte}</td>
-                  {/* <td>${parseFloat(corte.precio_venta).toFixed(2)}</td> */}
                   <td>${((nuevoPrecio[corte.id] || 0) * corte.kilos).toFixed(2)}</td>
                   <td>
                     <input
                       type="number"
-                      className="form-control "
+                      className="form-control"
                       value={nuevoPrecio[corte.id] || ''}
                       onChange={(event) => handleNuevoPrecioChange(event, corte.id)}
-                      />
+                    />
                   </td>
                   <td>${parseFloat(corte.precio_venta).toFixed(2)}</td>
-                      <td>${parseFloat(corte.kilos * corte.precio_venta).toFixed(2)}</td>
+                  <td>${parseFloat(corte.kilos * corte.precio_venta).toFixed(2)}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="6">No hay datos disponibles</td>
+                <td colSpan="5">No hay datos disponibles</td>
               </tr>
             )}
             <tr>
               <td><strong>Total:</strong></td>
-              <td colSpan="2">${totalPrecio.toFixed(2)}</td>
+              <td colSpan="2">${totalNuevoPrecio.toFixed(2)}</td>
               <td>---</td>
-              <td>${(totalNuevoPrecio.toFixed(2))}</td>
-           
+              <td>${totalPrecio.toFixed(2)}</td>
             </tr>
           </tbody>
         </table>
-        </div>
       </div>
-      <div className="mt-3 ml-2">
-        <button className="btn btn-success" onClick={exportToExcel}>Descargar en Excel</button>
-        <button className="btn btn-primary ms-2" onClick={shareExcel}>Compartir</button>
-      </div>
-  
-    </>
-  );
+    </div>
+    <div className="mt-3 ml-2">
+      <button className="btn btn-success" onClick={exportToExcel}>Descargar en Excel</button>
+      <button className="btn btn-primary ms-2" onClick={shareExcel}>Compartir</button>
+    </div>
+  </>
+);
 }
 
 export default Edicion;
