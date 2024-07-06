@@ -112,7 +112,7 @@ function Edicion() {
       'Venta': totalNuevoPrecio.toFixed(2),
       'Utilidad': (totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)).toFixed(2),
       'Porcentaje': ((((totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / (parseFloat(selectedPrecio) * selectedkgMedia)) * 100).toFixed(2)),
-      'Ganancia/KG': (((totalNuevoPrecio - (parseFloat(selectedkgMedia) * selectedkgMedia)) / selectedkgMedia).toFixed(2))
+      'Ganancia/KG': (((totalNuevoPrecio - (parseFloat(selectedPrecio) * selectedkgMedia)) / selectedkgMedia).toFixed(2))
     };
 
     const dataCortes = cortes.map(corte => ({
@@ -121,7 +121,7 @@ function Edicion() {
       'Nuevo Total': ((nuevoPrecio[corte.id] || 0) * corte.kilos).toFixed(2)
     }));
 
-    return [
+    const worksheetData = [
       { 'Categoria': categoriaNombre, 'Fecha': fecha },
       {},
       { '': 'Corte', 'Precio Anterior': 'Precio Anterior', 'Nuevo Total': 'Nuevo Total' },
@@ -130,23 +130,18 @@ function Edicion() {
       { '': 'Anterior', ...resultadosOriginales },
       { '': 'Nuevo', ...resultadosNuevos }
     ];
+
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+
+    // Ajustar la altura de las filas
+    const rowHeights = new Array(worksheetData.length).fill({ hpx: 20 }); // Altura de 20 píxeles para todas las filas
+    worksheet['!rows'] = rowHeights;
+
+    return worksheet;
   };
 
   const exportToExcel = () => {
-    const worksheetData = generateWorksheetData();
-    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
-
-    // Ajuste de ancho de columna
-    const wscols = [
-      { wch: 20 }, // ancho de la primera columna
-      { wch: 15 }, // ancho de la segunda columna
-      { wch: 15 },
-      { wch: 15 },
-      { wch: 15 },
-      { wch: 15 }
-    ];
-    worksheet['!cols'] = wscols;
-
+    const worksheet = generateWorksheetData();
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Resultados');
 
@@ -154,20 +149,7 @@ function Edicion() {
   };
 
   const shareExcel = async () => {
-    const worksheetData = generateWorksheetData();
-    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
-
-    // Ajuste de ancho de columna
-    const wscols = [
-      { wch: 20 }, // ancho de la primera columna
-      { wch: 15 }, // ancho de la segunda columna
-      { wch: 15 },
-      { wch: 15 },
-      { wch: 15 },
-      { wch: 15 }
-    ];
-    worksheet['!cols'] = wscols;
-
+    const worksheet = generateWorksheetData();
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Resultados');
 
@@ -192,6 +174,7 @@ function Edicion() {
       console.warn('La API de compartir archivos no es compatible con este navegador');
     }
   };
+
 
   return (
     <>
@@ -313,4 +296,6 @@ function Edicion() {
 }
 
 export default Edicion;
+
+
 
