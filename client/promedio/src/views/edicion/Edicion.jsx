@@ -250,7 +250,7 @@ function Edicion() {
                 <tr key={corte.id}>
                   <td>{corte.corte}</td>
                   {/* <td>${parseFloat(corte.precio_venta).toFixed(2)}</td> */}
-                  <td>${(nuevoPrecio[corte.id] || 0) * corte.kilos}</td>
+                  <td>${((nuevoPrecio[corte.id] || 0) * corte.kilos).toFixed(2)}</td>
                   <td>
                     <input
                       type="number"
