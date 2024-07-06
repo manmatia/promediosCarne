@@ -12,8 +12,8 @@ const UserIcon = () => {
     <ClerkProvider 
       publishableKey={clerkPubKey} 
       localization={esES}
-      afterSignInUrl="/home"  // URL a la que redirigir después de iniciar sesión
-      afterSignOutUrl="/landing"  // URL a la que redirigir después de cerrar sesión
+      afterSignInUrl="https://promedios-carne.vercel.app/home"  // URL a la que redirigir después de iniciar sesión
+      afterSignOutUrl="https://promedios-carne.vercel.app/landing"  // URL a la que redirigir después de cerrar sesión
     >
       <User />
     </ClerkProvider>
