@@ -36,4 +36,13 @@ server.use((err, req, res, next) => {
   res.status(status).send(message);
 });
 
+server.use(cors({
+  origin: '*',
+  credentials: true,
+}));
+server.use(cors({
+  origin: 'https://promedios-carne.vercel.app/', // Reemplaza con la URL real de tu frontend en Vercel
+  credentials: true,
+}));
+
 module.exports = server;
