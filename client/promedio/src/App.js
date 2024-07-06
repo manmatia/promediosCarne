@@ -13,7 +13,8 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
-axios.defaults.baseURL = "http://localhost:28334"
+// Base URL configurada para Axios usando una variable de entorno
+axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL || "http://localhost:28334";
 
 function App() {
   const user = useSelector((state) => state.userById);
