@@ -2,7 +2,7 @@ import React from 'react';
 import UserIcon from '../../views/login/UserIcon';
 import { useSelector } from "react-redux";
 import { NavLink } from 'react-router-dom';
-import "./NavBar.css"
+import './NavBar.css'; // Asegúrate de tener tu archivo CSS incluido
 
 function Navbar() {
   const user = useSelector((state) => state.userById);
@@ -15,7 +15,7 @@ function Navbar() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+          <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             <li className="nav-item">
               <NavLink exact to="/home" className="nav-link" activeClassName="active" aria-current="page">INICIO</NavLink>
             </li>
