@@ -13,7 +13,7 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
-axios.defaults.baseURL = 'http://localhost:3001/';
+axios.defaults.baseURL = "http://localhost:28334"
 
 function App() {
   const user = useSelector((state) => state.userById);
