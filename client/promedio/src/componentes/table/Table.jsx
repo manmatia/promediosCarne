@@ -96,8 +96,33 @@ console.log(totalKilos, totalPorcentaje)
       </div>
       <hr />
       <hr />
-
+      <h4>Datos Adicionales</h4>
+        <table className="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th scope="col">kgMedia</th>
+              <th scope="col">Precio</th>
+              <th scope="col">Costo</th>
+              <th scope="col">Venta</th>
+              <th scope="col">Utilidad</th>
+              <th scope="col">Porcentaje</th>
+              <th scope="col">Ganancia/KG</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{selectedkgMedia}</td>
+              <td>${parseFloat(selectedPrecio).toFixed(2)}</td>
+              <td>${parseFloat(selectedPrecio).toFixed(2)*selectedkgMedia}</td>
+              <td>${totalPrecio.toFixed(2)}</td>
+              <td>${totalPrecio.toFixed(2)-(parseFloat(selectedPrecio).toFixed(2)*selectedkgMedia)}</td>
+              <td>{((((totalPrecio.toFixed(2)-(parseFloat(selectedPrecio).toFixed(2)*selectedkgMedia))/(parseFloat(selectedPrecio).toFixed(2)*selectedkgMedia)))*100).toFixed(2)}%</td>
+              <td>${((totalPrecio.toFixed(2)-(parseFloat(selectedPrecio).toFixed(2)*selectedkgMedia))/selectedkgMedia).toFixed(2)}</td>
+            </tr>
+          </tbody>
+        </table>
       <div>
+        <hr /><hr />
         <br />
         <table className="table table-striped table-hover">
           <thead>
@@ -138,7 +163,7 @@ console.log(totalKilos, totalPorcentaje)
 
       <div>
         <br />
-        <h4>Datos Adicionales</h4>
+        {/* <h4>Datos Adicionales</h4>
         <table className="table table-striped table-hover">
           <thead>
             <tr>
@@ -162,7 +187,7 @@ console.log(totalKilos, totalPorcentaje)
               <td>${((totalPrecio.toFixed(2)-(parseFloat(selectedPrecio).toFixed(2)*selectedkgMedia))/selectedkgMedia).toFixed(2)}</td>
             </tr>
           </tbody>
-        </table>
+        </table> */}
         <>
       {/* Componente FileUpload para subir archivos Excel */}
       <FileUpload categoriaId={selectedId} />
