@@ -16,24 +16,51 @@ import {
 } from "./ActionsTypes";
 
 
-export const putPromedio = (categoriaId, data) => {
+// export const putPromedio = (categoriaId, data) => {
+//   return async (dispatch) => {
+//     try {
+//       console.log('Datos recibidos:', data); // Verifica qué datos estás recibiendo aquí
+
+//       const response = await axios.put(`/${categoriaId}`, data, {
+//         headers: {
+//           'Content-Type': 'application/json'
+//         }
+//       });
+//       console.log('Respuesta del servidor:', response.data); // Verifica la respuesta del servidor
+
+//       dispatch({
+//         type: PUT_PROMEDIO_SUCCESS,
+//         payload: response.data,
+//       });
+//     } catch (error) {
+//       console.error('Error al actualizar:', error.response ? error.response.data : error.message);
+//     }
+//   };
+// };
+
+export const putPromedio = (categoriaId, data, setError) => {
   return async (dispatch) => {
     try {
-      console.log('Datos recibidos:', data); // Verifica qué datos estás recibiendo aquí
+      console.log('Datos recibidos:', data);
 
       const response = await axios.put(`/${categoriaId}`, data, {
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      console.log('Respuesta del servidor:', response.data); // Verifica la respuesta del servidor
+      console.log('Respuesta del servidor:', response.data);
 
       dispatch({
         type: PUT_PROMEDIO_SUCCESS,
         payload: response.data,
       });
     } catch (error) {
-      console.error('Error al actualizar:', error.response ? error.response.data : error.message);
+      let errorMessage = error.response ? error.response.data : error.message;
+      if (typeof errorMessage === 'object') {
+        errorMessage = JSON.stringify(errorMessage);
+      }
+      console.error('Error al actualizar:', errorMessage);
+      setError(errorMessage);
     }
   };
 };
