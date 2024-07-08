@@ -17,6 +17,7 @@ const FileUpload = ({ categoriaId }) => {
     if (fileData) {
       dispatch(putPromedio(categoriaId, fileData));
       setFileData(null);
+      window.location.reload();
     }
     setShowModal(false);
   };
