@@ -277,11 +277,11 @@ function Edicion() {
                   <td colSpan="4">No hay datos disponibles</td>
                 </tr>
               )}
-              <tr>
+              {/* <tr>
                 <td><strong>Total:</strong></td>
                 <td colSpan="2">${totalNuevoPrecio.toFixed(2)}</td>
                 <td>${totalPrecio.toFixed(2)}</td>
-              </tr>
+              </tr> */}
             </tbody>
           </table>
         </div>
