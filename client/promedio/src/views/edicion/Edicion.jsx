@@ -164,7 +164,14 @@ function Edicion() {
       }
     } else {
       console.warn('La API de compartir archivos no es compatible con este navegador');
-      alert('La funcionalidad de compartir archivos no está soportada en este navegador.');
+      // Descargar el archivo como alternativa
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(file);
+      link.download = 'resultados.xlsx';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      alert('La funcionalidad de compartir no está soportada. El archivo se descargará en su lugar.');
     }
   };
 
