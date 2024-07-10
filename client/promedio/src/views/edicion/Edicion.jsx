@@ -12,6 +12,7 @@ function Edicion() {
   const [totalKilos, setTotalKilos] = useState(0);
   const [totalPrecio, setTotalPrecio] = useState(0);
   const [nuevoPrecio, setNuevoPrecio] = useState({});
+  const [editingPrecio, setEditingPrecio] = useState({}); // Estado para almacenar valores temporales
   const [totalNuevoPrecio, setTotalNuevoPrecio] = useState(0);
 
   const categorias = useSelector((state) => state.categories);
@@ -55,13 +56,25 @@ function Edicion() {
       initialNuevoPrecio[corte.id] = parseFloat(corte.precio_venta);
     });
     setNuevoPrecio(initialNuevoPrecio);
+    setEditingPrecio({});
   };
 
   const handleNuevoPrecioChange = (event, corteId) => {
-    const precio = parseFloat(event.target.value);
-    setNuevoPrecio((prevPrices) => ({
+    const precio = event.target.value;
+    setEditingPrecio((prevPrices) => ({
       ...prevPrices,
       [corteId]: precio
+    }));
+  };
+
+  const handleNuevoPrecioBlur = (corteId) => {
+    setNuevoPrecio((prevPrices) => ({
+      ...prevPrices,
+      [corteId]: parseFloat(editingPrecio[corteId])
+    }));
+    setEditingPrecio((prevPrices) => ({
+      ...prevPrices,
+      [corteId]: null
     }));
   };
 
@@ -256,8 +269,9 @@ function Edicion() {
                       <input
                         type="number"
                         className="form-control"
-                        value={nuevoPrecio[corte.id] || parseFloat(corte.precio_venta)} // Mostrar precio anterior si no hay nuevo
+                        value={editingPrecio[corte.id] !== undefined ? editingPrecio[corte.id] : nuevoPrecio[corte.id] || parseFloat(corte.precio_venta)} // Mostrar precio anterior si no hay nuevo
                         onChange={(event) => handleNuevoPrecioChange(event, corte.id)}
+                        onBlur={() => handleNuevoPrecioBlur(corte.id)} // Actualizar nuevoPrecio cuando el usuario termine de editar
                       />
                     </td>
                     <td>${((nuevoPrecio[corte.id] || parseFloat(corte.precio_venta)) * parseFloat(corte.kilos).toFixed(2)).toFixed(2)}</td>
