@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { getCategories, getCategoriesId } from "../../redux/Actions";
 import { useSelector, useDispatch } from "react-redux";
 import * as XLSX from 'xlsx';
-import { WhatsappShareButton } from 'react-share'; // Importar WhatsappShareButton desde react-share
 import "./Edicion.css";
 
 function Edicion() {
@@ -14,7 +13,6 @@ function Edicion() {
   const [totalPrecio, setTotalPrecio] = useState(0);
   const [nuevoPrecio, setNuevoPrecio] = useState({});
   const [totalNuevoPrecio, setTotalNuevoPrecio] = useState(0);
-  const [downloadUrl, setDownloadUrl] = useState('');
 
   const categorias = useSelector((state) => state.categories);
   const categoriaSeleccionada = useSelector((state) => state.allProducts) || {};
@@ -102,18 +100,7 @@ function Edicion() {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Resultados');
 
-    const file = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    const blob = new Blob([file], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    });
-    const url = URL.createObjectURL(blob);
-    setDownloadUrl(url);
-
-    // Descargar el archivo
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'resultados.xlsx';
-    link.click();
+    XLSX.writeFile(workbook, 'resultados.xlsx');
   };
 
   const generateWorksheetData = () => {
@@ -152,13 +139,39 @@ function Edicion() {
     return worksheet;
   };
 
-  const shareExcel = () => {
-    if (downloadUrl) {
-      const whatsappMessage = `Consulta los nuevos precios en el siguiente enlace: ${downloadUrl}`;
-      const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappMessage)}`;
-      window.open(whatsappUrl, '_blank');
+  const shareExcel = async () => {
+    const worksheet = generateWorksheetData();
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Resultados');
+  
+    const file = new Blob([XLSX.write(workbook, { bookType: 'xlsx', type: 'array' })], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+  
+    const fileHandle = new File([file], 'resultados.xlsx', { type: file.type });
+  
+    if (navigator.canShare && navigator.canShare({ files: [fileHandle] })) {
+      try {
+        await navigator.share({
+          files: [fileHandle],
+          title: 'Nuevos precios',
+          text: 'Consulta los resultados en Excel.'
+        });
+        console.log('Archivo compartido exitosamente');
+      } catch (error) {
+        console.error('Error al compartir el archivo:', error);
+        alert('Error al compartir el archivo. Por favor intenta con otro navegador.');
+      }
     } else {
-      alert('Primero genera el archivo Excel.');
+      console.warn('La API de compartir archivos no es compatible con este navegador');
+      // Descargar el archivo como alternativa
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(file);
+      link.download = 'resultados.xlsx';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      alert('La funcionalidad de compartir no está soportada. El archivo se descargará en su lugar.');
     }
   };
 
@@ -233,7 +246,7 @@ function Edicion() {
                 cortes.map((corte) => (
                   <tr key={corte.id}>
                     <td>{corte.corte}</td>
-                    <td>{selectedkgMedia ? ((corte.kilos / selectedkgMedia) * 100).toFixed(2) : '-'}</td>
+                    <td>{selectedkgMedia ? ((corte.kilos / selectedkgMedia) * 100).toFixed(2) : '-'}%</td>
                     <td>{corte.kilos}</td>
                     <td>
                       <input
@@ -264,7 +277,7 @@ function Edicion() {
       </div>
       <div className="mt-3 ml-2">
         <button className="btn btn-success" onClick={exportToExcel}>Descargar en Excel</button>
-        <button className="btn btn-primary ms-2" onClick={shareExcel}>Compartir por WhatsApp</button>
+        <button className="btn btn-primary ms-2" onClick={shareExcel}>Compartir</button>
       </div>
     </>
   );
