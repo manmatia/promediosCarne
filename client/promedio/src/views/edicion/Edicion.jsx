@@ -151,20 +151,19 @@ function Edicion() {
     const fileHandle = new File([file], 'resultados.xlsx', { type: file.type });
 
     try {
-      if (navigator.canShare && navigator.canShare({ files: [fileHandle] })) {
-        await navigator.share({
-          files: [fileHandle],
-          title: 'Nuevos precios',
-          text: 'Consulta los resultados en Excel.'
-        });
-        console.log('Archivo compartido exitosamente');
-      } else {
-        // Manejar alternativas si la API de compartir no es compatible o no está disponible
-        throw new Error('La API de compartir archivos no es compatible con este navegador');
-      }
+      const shareData = {
+        title: 'Nuevos precios',
+        text: 'Consulta los resultados en Excel.',
+        files: [fileHandle]
+      };
+
+      // Uso de shareAcross para compartir el archivo
+      await window.shareAcross(shareData);
+
+      console.log('Archivo compartido exitosamente');
     } catch (error) {
       console.error('Error al compartir el archivo:', error);
-      // Aquí podrías mostrar un mensaje de error al usuario o manejar la situación de otra manera
+      // Manejar el error aquí, por ejemplo, mostrando un mensaje al usuario
     }
   };
 
@@ -227,7 +226,7 @@ function Edicion() {
           <table className="table table-striped table-hover">
             <thead>
               <tr>
-                <th scope="col">CORTE</th>
+                <th scope="col">Corte</th>
                 <th scope="col">%</th>
                 <th scope="col">KG</th>
                 <th scope="col">PRECIO</th>
@@ -249,7 +248,7 @@ function Edicion() {
                         onChange={(event) => handleNuevoPrecioChange(event, corte.id)}
                       />
                     </td>
-                    <td>${((nuevoPrecio[corte.id] || parseFloat(corte.precio_venta)) * parseFloat(corte.kilos).toFixed(2)).toFixed(2)}</td>
+                    <td>${((nuevoPrecio[corte.id] || parseFloat(corte.precio_venta)) * parseFloat(corte.kilos)).toFixed(2)}</td>
 
                   </tr>
                 ))
