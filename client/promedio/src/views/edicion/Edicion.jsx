@@ -151,7 +151,6 @@ function Edicion() {
 
     return worksheet;
   };
-
   const shareExcel = async () => {
     const worksheet = generateWorksheetData();
     const workbook = XLSX.utils.book_new();
@@ -167,6 +166,7 @@ function Edicion() {
       month: '2-digit',
       year: '2-digit'
     });
+  
     if (navigator.canShare && navigator.canShare({ files: [fileHandle] })) {
       try {
         await navigator.share({
@@ -191,6 +191,7 @@ function Edicion() {
       alert('La funcionalidad de compartir no está soportada. El archivo se descargará en su lugar.');
     }
   };
+  
 
   return (
     <>
