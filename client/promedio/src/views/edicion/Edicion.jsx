@@ -14,6 +14,7 @@ function Edicion() {
   const [totalPrecio, setTotalPrecio] = useState(0);
   const [nuevoPrecio, setNuevoPrecio] = useState({});
   const [totalNuevoPrecio, setTotalNuevoPrecio] = useState(0);
+  const [downloadUrl, setDownloadUrl] = useState('');
 
   const categorias = useSelector((state) => state.categories);
   const categoriaSeleccionada = useSelector((state) => state.allProducts) || {};
@@ -101,7 +102,18 @@ function Edicion() {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Resultados');
 
-    XLSX.writeFile(workbook, 'resultados.xlsx');
+    const file = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([file], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+    const url = URL.createObjectURL(blob);
+    setDownloadUrl(url);
+
+    // Descargar el archivo
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'resultados.xlsx';
+    link.click();
   };
 
   const generateWorksheetData = () => {
@@ -140,39 +152,13 @@ function Edicion() {
     return worksheet;
   };
 
-  const shareExcel = async () => {
-    const worksheet = generateWorksheetData();
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Resultados');
-  
-    const file = new Blob([XLSX.write(workbook, { bookType: 'xlsx', type: 'array' })], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    });
-  
-    const fileHandle = new File([file], 'resultados.xlsx', { type: file.type });
-  
-    if (navigator.canShare && navigator.canShare({ files: [fileHandle] })) {
-      try {
-        await navigator.share({
-          files: [fileHandle],
-          title: 'Nuevos precios',
-          text: 'Consulta los resultados en Excel.'
-        });
-        console.log('Archivo compartido exitosamente');
-      } catch (error) {
-        console.error('Error al compartir el archivo:', error);
-        alert('Error al compartir el archivo. Por favor intenta con otro navegador.');
-      }
+  const shareExcel = () => {
+    if (downloadUrl) {
+      const whatsappMessage = `Consulta los nuevos precios en el siguiente enlace: ${downloadUrl}`;
+      const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappMessage)}`;
+      window.open(whatsappUrl, '_blank');
     } else {
-      console.warn('La API de compartir archivos no es compatible con este navegador');
-      // Descargar el archivo como alternativa
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(file);
-      link.download = 'resultados.xlsx';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      alert('La funcionalidad de compartir no está soportada. El archivo se descargará en su lugar.');
+      alert('Primero genera el archivo Excel.');
     }
   };
 
@@ -278,14 +264,7 @@ function Edicion() {
       </div>
       <div className="mt-3 ml-2">
         <button className="btn btn-success" onClick={exportToExcel}>Descargar en Excel</button>
-        <WhatsappShareButton
-          url={window.location.href} // URL de la página actual
-          title="Nuevos precios" // Título que se compartirá en WhatsApp
-          separator=" - " // Separador entre el título y el texto
-          className="btn btn-primary ms-2" // Clase de estilo para el botón
-        >
-          Compartir por WhatsApp
-        </WhatsappShareButton>
+        <button className="btn btn-primary ms-2" onClick={shareExcel}>Compartir por WhatsApp</button>
       </div>
     </>
   );
