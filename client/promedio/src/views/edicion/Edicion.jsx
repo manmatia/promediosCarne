@@ -150,19 +150,21 @@ function Edicion() {
 
     const fileHandle = new File([file], 'resultados.xlsx', { type: file.type });
 
-    if (navigator.canShare && navigator.canShare({ files: [fileHandle] })) {
-      try {
+    try {
+      if (navigator.canShare && navigator.canShare({ files: [fileHandle] })) {
         await navigator.share({
           files: [fileHandle],
           title: 'Nuevos precios',
           text: 'Consulta los resultados en Excel.'
         });
         console.log('Archivo compartido exitosamente');
-      } catch (error) {
-        console.error('Error al compartir el archivo:', error);
+      } else {
+        // Manejar alternativas si la API de compartir no es compatible o no está disponible
+        throw new Error('La API de compartir archivos no es compatible con este navegador');
       }
-    } else {
-      console.warn('La API de compartir archivos no es compatible con este navegador');
+    } catch (error) {
+      console.error('Error al compartir el archivo:', error);
+      // Aquí podrías mostrar un mensaje de error al usuario o manejar la situación de otra manera
     }
   };
 
