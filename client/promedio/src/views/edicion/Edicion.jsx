@@ -79,7 +79,7 @@ function Edicion() {
         if (!isNaN(precioVenta)) {
           totalPrecioValue += parseFloat(corte.kilos) * precioVenta;
         }
-        const nuevoPrecioValue = nuevoPrecio[corte.id] || precioVenta; // Usar el precio anterior si no se ha modificado
+        const nuevoPrecioValue = nuevoPrecio[corte.id] || precioVenta; // Usar precioVenta si no hay nuevoPrecio definido
         totalNuevoPrecioValue += nuevoPrecioValue * corte.kilos;
       });
 
@@ -165,6 +165,7 @@ function Edicion() {
       console.warn('La API de compartir archivos no es compatible con este navegador');
     }
   };
+
   return (
     <>
       <br />
@@ -225,10 +226,10 @@ function Edicion() {
             <thead>
               <tr>
                 <th scope="col">CORTE</th>
-                <th scope="col">NUEVO TOTAL</th>
-                <th scope="col">NUEVO PRECIO</th>
-                <th scope="col">PRECIO ANTERIOR</th>
-                <th scope="col">TOTAL ANTERIOR</th>
+                <th scope="col">%</th>
+                <th scope="col">KG</th>
+                <th scope="col">PRECIO</th>
+                <th scope="col">TOTAL</th>
               </tr>
             </thead>
             <tbody>
@@ -236,7 +237,8 @@ function Edicion() {
                 cortes.map((corte) => (
                   <tr key={corte.id}>
                     <td>{corte.corte}</td>
-                    <td>${((nuevoPrecio[corte.id] || parseFloat(corte.precio_venta)) * corte.kilos).toFixed(2)}</td>
+                    <td>{selectedkgMedia ? ((corte.kilos / selectedkgMedia) * 100).toFixed(2) : '-'}%</td>
+                    <td>{corte.kilos}</td>
                     <td>
                       <input
                         type="number"
@@ -245,8 +247,8 @@ function Edicion() {
                         onChange={(event) => handleNuevoPrecioChange(event, corte.id)}
                       />
                     </td>
-                    <td>${parseFloat(corte.precio_venta).toFixed(2)}</td>
-                    <td>${parseFloat(corte.kilos * corte.precio_venta).toFixed(2)}</td>
+                    <td>${((nuevoPrecio[corte.id] || parseFloat(corte.precio_venta)) * parseFloat(corte.kilos).toFixed(2)).toFixed(2)}</td>
+
                   </tr>
                 ))
               ) : (
