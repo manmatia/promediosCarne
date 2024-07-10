@@ -171,7 +171,7 @@ function Edicion() {
       // Descargar el archivo como alternativa
       const link = document.createElement('a');
       link.href = URL.createObjectURL(file);
-      link.download = 'resultados.xlsx';
+      link.download = `Nuevos precios ${fecha}`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
