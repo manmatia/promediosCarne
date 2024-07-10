@@ -147,15 +147,19 @@ function Edicion() {
     const file = new Blob([XLSX.write(workbook, { bookType: 'xlsx', type: 'array' })], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     });
-  
+    const categoriaNombre = categorias.find(cat => cat.id === selectedId)?.nombre || '';
     const fileHandle = new File([file], 'resultados.xlsx', { type: file.type });
-  
+    const fecha = new Date().toLocaleDateString('es-AR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: '2-digit'
+    });
     if (navigator.canShare && navigator.canShare({ files: [fileHandle] })) {
       try {
         await navigator.share({
           files: [fileHandle],
-          title: 'Nuevos precios',
-          text: 'Consulta los resultados en Excel.'
+          title: `Nuevos precios ${fecha}`,
+          text: `${categoriaNombre}`
         });
         console.log('Archivo compartido exitosamente');
       } catch (error) {
