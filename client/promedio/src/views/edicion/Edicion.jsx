@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getCategories, getCategoriesId } from "../../redux/Actions";
 import { useSelector, useDispatch } from "react-redux";
 import * as XLSX from 'xlsx';
+import { WhatsappShareButton } from 'react-share'; // Importar WhatsappShareButton desde react-share
 import "./Edicion.css";
 
 function Edicion() {
@@ -246,7 +247,7 @@ function Edicion() {
                 cortes.map((corte) => (
                   <tr key={corte.id}>
                     <td>{corte.corte}</td>
-                    <td>{selectedkgMedia ? ((corte.kilos / selectedkgMedia) * 100).toFixed(2) : '-'}%</td>
+                    <td>{selectedkgMedia ? ((corte.kilos / selectedkgMedia) * 100).toFixed(2) : '-'}</td>
                     <td>{corte.kilos}</td>
                     <td>
                       <input
@@ -277,7 +278,14 @@ function Edicion() {
       </div>
       <div className="mt-3 ml-2">
         <button className="btn btn-success" onClick={exportToExcel}>Descargar en Excel</button>
-        <button className="btn btn-primary ms-2" onClick={shareExcel}>Compartir</button>
+        <WhatsappShareButton
+          url={window.location.href} // URL de la página actual
+          title="Nuevos precios" // Título que se compartirá en WhatsApp
+          separator=" - " // Separador entre el título y el texto
+          className="btn btn-primary ms-2" // Clase de estilo para el botón
+        >
+          Compartir por WhatsApp
+        </WhatsappShareButton>
       </div>
     </>
   );
