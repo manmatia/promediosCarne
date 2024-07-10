@@ -143,13 +143,13 @@ function Edicion() {
     const worksheet = generateWorksheetData();
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Resultados');
-
+  
     const file = new Blob([XLSX.write(workbook, { bookType: 'xlsx', type: 'array' })], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     });
-
+  
     const fileHandle = new File([file], 'resultados.xlsx', { type: file.type });
-
+  
     if (navigator.canShare && navigator.canShare({ files: [fileHandle] })) {
       try {
         await navigator.share({
@@ -160,9 +160,11 @@ function Edicion() {
         console.log('Archivo compartido exitosamente');
       } catch (error) {
         console.error('Error al compartir el archivo:', error);
+        alert('Error al compartir el archivo. Por favor intenta con otro navegador.');
       }
     } else {
       console.warn('La API de compartir archivos no es compatible con este navegador');
+      alert('La funcionalidad de compartir archivos no está soportada en este navegador.');
     }
   };
 
